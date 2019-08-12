@@ -10,16 +10,6 @@
         class="alert alert-danger col-12"
       >{{ index + ' : ' + error.join(', ') }}</div>
     </div>
-    <div class="row">
-      <div
-        v-bind:key="index"
-        v-for="(error, index) in errors"
-        role="alert"
-        aria-live="polite"
-        aria-atomic="true"
-        class="alert alert-danger col-12"
-      >{{ index + ' : ' + error.join(', ') }}</div>
-    </div>
     <div class="row h-100 justify-content-center align-items-center">
       <form class="col-6 card" id="form">
         <h1 class="mb-3 mt-3 text-primary">Login</h1>
@@ -27,7 +17,7 @@
           <input v-model="email" value="anikets@gmail.com" type="email" class="form-control" placeholder="Email" required email />
         </div>
         <div class="form-group">
-          <input v-model="password" value="anikets123" type="password" class="form-control" placeholder="Password" required />
+          <input v-model="password" value="anikets123" type="password" class="form-control" placeholder="Password" required  min="8"/>
         </div>
         <div class="form-group">
           <button v-on:click="login" type="button" class="btn btn-primary">Login</button>
@@ -39,7 +29,7 @@
 
 <script>
 const axios = require("axios");
-// import router from "../router";
+import router from "../router";
 
 export default {
   name: "login",
@@ -70,6 +60,7 @@ export default {
       })
       .then(function(response) {
         this.$store.state.token = response.data.access_token;
+        router.push({ name: "dashboard" });
       })
       .catch(function(error) {
         vm.test = JSON.stringify(error);
