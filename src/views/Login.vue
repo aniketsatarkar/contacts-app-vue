@@ -14,10 +14,24 @@
       <form class="col-6 card" id="form">
         <h1 class="mb-3 mt-3 text-primary">Login</h1>
         <div class="form-group">
-          <input v-model="email" value="anikets@gmail.com" type="email" class="form-control" placeholder="Email" required email />
+          <input
+            v-model="email"
+            type="email"
+            class="form-control"
+            placeholder="Email"
+            required
+            email
+          />
         </div>
         <div class="form-group">
-          <input v-model="password" value="anikets123" type="password" class="form-control" placeholder="Password" required  min="8"/>
+          <input
+            v-model="password"
+            type="password"
+            class="form-control"
+            placeholder="Password"
+            required
+            min="8"
+          />
         </div>
         <div class="form-group">
           <button v-on:click="login" type="button" class="btn btn-primary">Login</button>
@@ -35,10 +49,9 @@ export default {
   name: "login",
   data: function() {
     return {
-      email   : "",
-      password: "",
-      errors  : [],
-      test    : "test"
+      email: "anikets@gmail.com",
+      password: "anikets123",
+      errors: []
     };
   },
   methods: {
@@ -50,21 +63,26 @@ export default {
 
       if (!form.checkValidity()) return false;
 
-      axios({
-        method: "post",
-        url   : "http://laravel.local/api/auth/login",
-        data: {
+      axios
+        .post("http://laravel.local/api/auth/login", {
           email: vm.email,
           password: vm.password
-        }
-      })
-      .then(function(response) {
-        this.$store.state.token = response.data.access_token;
-        router.push({ name: "dashboard" });
-      })
-      .catch(function(error) {
-        vm.test = JSON.stringify(error);
-      });
+        })
+        .then(function(response) {
+          /* eslint-disable no-console */
+          console.log("RESPONSE : " + JSON.stringify(response));
+
+          // store the JWT token in global state >>>
+          vm.$store.state.token = response.data.access_token;
+
+          vm.$cookie.set("token", response.data.access_token, 30);
+
+          // make instance as logged in >>>
+          vm.$store.state.isLoggedIn = true;
+
+          // redirect user to the dashboard >>
+          router.push({ name: "dashboard" });
+        });
     }
   }
 };
