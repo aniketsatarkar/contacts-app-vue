@@ -50,5 +50,6 @@ new Vue({
       router.push({ name: "dashboard" });
       this.$store.state.isLoggedIn = true;
     }
-  }
+  },
+  methods: {}
 }).$mount("#app");

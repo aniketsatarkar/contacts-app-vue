@@ -15,7 +15,6 @@
       </button>
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        
         <ul class="navbar-nav mr-auto">
           <li class="nav-item active">
             <a class="nav-link" href="#">
@@ -30,7 +29,7 @@
 
         <div class="form-inline my-2 my-lg-0">
           <div v-if="this.$store.state.isLoggedIn">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Logout</button>
+            <button class="btn btn-outline-success my-2 my-sm-0" v-on:click="logout">Logout</button>
           </div>
           <div v-else>
             <router-link class="btn btn-outline-info my-2 my-sm-0 mr-3" to="/login">Login</router-link>
@@ -46,24 +45,30 @@
   </div>
 </template>
 
-<style>
-#app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
+<script>
+const axios = require("axios");
+var VueCookies = require("vue-cookie");
+export default {
+  methods: {
+    logout: function() {
+      axios({
+        url: "http://laravel.local/api/auth/logout",
+        data: {},
+        headers: {
+          Authorization: "Bearer " + VueCookies.get("token")
+        },
+        method: "GET"
+      })
+        .then(function(response) {
+          // eslint-disable-next-line no-console
+          console.log("LOGOUT RESPONSE : " + JSON.stringify(response));
+          VueCookies.delete("token");
+        })
+        .catch(function(error) {
+          // eslint-disable-next-line no-console
+          console.log("LOGOUT RESPONSE : " + JSON.stringify(error));
+        });
+    }
+  }
+};
+</script>

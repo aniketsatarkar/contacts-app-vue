@@ -82,6 +82,9 @@ export default {
 
           // redirect user to the dashboard >>
           router.push({ name: "dashboard" });
+        })
+        .catch(function(error) {
+          vm.errors = errors.data.errors;
         });
     }
   }
