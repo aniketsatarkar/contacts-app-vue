@@ -1,6 +1,7 @@
 <template>
   <div>
     <div class="row">
+      
       <div
         v-bind:key="index"
         v-for="(error, index) in errors"
@@ -11,8 +12,14 @@
       >{{ index + ' : ' + error.join(', ') }}</div>
     </div>
     <div class="row h-100 justify-content-center align-items-center">
+
+      <div v-if="isSuccess" class="alert alert-success col-8" role="alert">
+        This is a success alert—check it out!
+      </div>
+
       <form class="col-6 card" id="form">
         <div class="form-group pt-3">
+          <label>First Name</label>
           <input
             v-model="firstName"
             type="text"
@@ -22,18 +29,21 @@
           />
         </div>
         <div class="form-group">
+          <label>Last Name</label>
           <input
             v-model="lastName"
-            type="email"
+            type="text"
             class="form-control"
             placeholder="Last Name"
             required
           />
         </div>
         <div class="form-group">
-          <input v-model="phone" type="password" class="form-control" placeholder="Phone" required />
+          <label>Phone</label>
+          <input v-model="phone" type="text" class="form-control" placeholder="Phone" required />
         </div>
         <div class="form-group">
+          <label>Secondary Phone</label>
           <input
             v-model="phoneSecondary"
             type="text"
@@ -42,9 +52,11 @@
           />
         </div>
         <div class="form-group">
+          <label>Email</label>
           <input v-model="email" type="email" class="form-control" placeholder="Email" email />
         </div>
-        <div class="form-group">
+        <div class="form-group text-center">
+          <button type="button" v-on:click="cancel" class="btn btn-info mr-3">Cancel</button>
           <button v-on:click="save" type="button" class="btn btn-primary">Save</button>
         </div>
       </form>
@@ -53,24 +65,26 @@
 </template>
 
 <script>
+
 import VueCookies from "vue-cookies";
-// import router from "../router";
+import router from "../router";
 import axios from "axios";
 
 export default {
   name: "contactForm",
   props: {
-    id: Number
+    id: Number,
+    isSuccess: Boolean
   },
   data: function() {
     return {
-      // id: null,
       firstName: "",
       lastName: "",
       phone: "",
       phoneSecondary: "",
       email: "",
-      errors: []
+      errors: [],
+      isSuccess: false
     };
   },
   methods: {
@@ -83,14 +97,9 @@ export default {
 
       axios({
         method: "GET",
-        url: "http://laravel.local/api/contact/get",
-        data: {
-          id: this.$parent.editId
-        },
+        url: "http://laravel.local/api/contact/get?id=" + this.$parent.editId,
         headers: {
-          headers: {
-            Authorization: "Bearer " + VueCookies.get("token")
-          }
+          Authorization: "Bearer " + VueCookies.get("token")
         }
       })
         .then(function(response) {
@@ -109,9 +118,14 @@ export default {
     update: function() {
       var self = this;
 
+      var form = document.getElementById("form");
+      form.reportValidity();
+
+      if (!form.checkValidity()) return false;
+
       axios({
         method: "POST",
-        url: "",
+        url: "http://laravel.local/api/contact/update",
         data: {
           id: this.$parent.editId,
           firstName: self.firstName,
@@ -119,12 +133,16 @@ export default {
           phone: self.phone,
           phoneSecondary: self.phoneSecondary,
           email: self.email
+        },
+        headers: {
+          Authorization: "Bearer " + VueCookies.get("token")
         }
       })
         .then(function(response) {
           /* eslint-disable no-console */
           console.log(response.data);
-          this.$parent.editId = null;
+          // self.$parent.editId = null;
+          self.isSuccess = true;
         })
         .catch(function(errors) {
           /* eslint-disable no-console */
@@ -133,33 +151,43 @@ export default {
     },
     create: function() {
       var self = this;
+      var form = document.getElementById("form");
+
+      form.reportValidity();
+
+      if (!form.checkValidity()) return false;
 
       axios({
         method: "POST",
-        url: "",
+        url: "http://laravel.local/api/contact/store",
         data: {
           firstName: self.firstName,
           lastName: self.lastName,
           phone: self.phone,
           phoneSecondary: self.phoneSecondary,
           email: self.email
+        },
+        headers: {
+          Authorization: "Bearer " + VueCookies.get("token")
         }
       })
-        .then(function(response) {
-          /* eslint-disable no-console */
-          console.log(response.data);
+        .then(function() {
+          self.isSuccess = true;
         })
-        .catch(function(errors) {
-          /* eslint-disable no-console */
-          console.log(errors.data);
-        });
+        .catch(function() {});
     },
     save: function() {
-      if (this.id != null || this.id != undefined) {
+      var id = this.$parent.editId;
+
+      if (id != null || id != undefined) {
         this.update();
       } else {
         this.create();
       }
+    },
+    cancel: function() {
+      this.$parent.showList = true;
+      this.$parent.editId = null;
     }
   },
   created: function() {

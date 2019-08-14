@@ -1,7 +1,9 @@
 <template>
   <div id="app">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <a class="navbar-brand" href="#">Contacts</a>
+      <a class="navbar-brand" href="#">
+        <img src="./assets/logo.png" width="25">
+      </a>
       <button
         class="navbar-toggler"
         type="button"
@@ -17,14 +19,14 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item active">
-            <a class="nav-link" href="#">
+            <!-- <a class="nav-link" href="#">
               Home
               <span class="sr-only">(current)</span>
-            </a>
+            </a> -->
           </li>
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <a class="nav-link" href="#">Link</a>
-          </li>
+          </li> -->
         </ul>
 
         <div class="form-inline my-2 my-lg-0">
@@ -48,6 +50,8 @@
 <script>
 const axios = require("axios");
 var VueCookies = require("vue-cookie");
+import router from "./router";
+
 export default {
   methods: {
     logout: function() {
@@ -63,6 +67,7 @@ export default {
           // eslint-disable-next-line no-console
           console.log("LOGOUT RESPONSE : " + JSON.stringify(response));
           VueCookies.delete("token");
+          router.push({name: 'login'});
         })
         .catch(function(error) {
           // eslint-disable-next-line no-console

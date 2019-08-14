@@ -13,7 +13,7 @@
         <tr v-for="item in list" v-bind:key="item.id">
           <td class="text-center">{{ item.firstName + " " + item.lastName }}</td>
           <td class="text-center">{{ item.phone }}</td>
-          <td class="text-center">{{ item.email }}</td>
+          <td class="text-center">{{ (item.email)? item.email : "N/A" }}</td>
           <td class="text-center">
             <button class="btn btn-outline-primary btn-sm mr-3" v-on:click="edit(item.id)">Edit</button>
             <button class="btn btn-outline-danger btn-sm" v-on:click="archive(item.id)">Delete</button>
@@ -49,43 +49,30 @@ export default {
         }
       })
         .then(function(response) {
-          /* eslint-disable no-console */
-          console.log("CONTACTS : " + JSON.stringify(response.data.contacts));
           self.list = response.data.contacts;
-          // self.$forceUpdate();
         })
-        .catch(function(error) {
-          /* eslint-disable no-console */
-          console.log("ERROR : " + JSON.stringify(error));
-        });
+        .catch(function() {});
     },
     archive: function(id) {
-      if (confirm("Do you want to delete this contact?")) {
-        /* eslint-disable no-console */
-        console.log("Contact is deleted!");
+      if (!confirm("Do you want to delete this contact?")) return false;
 
-        var self = this;
+      var self = this;
 
-        axios({
-          method: "POST",
-          url: "http://laravel.local/api/contact/delete",
-          data: {
-            id: id
-          },
-          headers: {
-            Authorization: "Bearer " + VueCookies.get("token")
-          }
+      axios({
+        method: "POST",
+        url: "http://laravel.local/api/contact/delete",
+        data: {
+          id: id
+        },
+        headers: {
+          Authorization: "Bearer " + VueCookies.get("token")
+        }
+      })
+        .then(function() {
+          self.getList();
         })
-          .then(function(response) {
-            /* eslint-disable no-console */
-            console.log(response.status);
-            self.getList();
-          })
-          .catch(function(errors) {
-            /* eslint-disable no-console */
-            console.log(errors.status);
-          });
-      }
+        .catch(function() {
+        });
     },
     edit: function(id) {
       this.$parent.editId = id;
