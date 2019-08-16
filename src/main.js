@@ -14,7 +14,7 @@ Vue.use(VueCookie);
 Vue.config.productionTip = false;
 
 Vue.mixin({
-  data: () => {
+  data: function() {
     return {
       baseUrl: "http://laravel.local/api/"
     };

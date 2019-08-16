@@ -1,7 +1,6 @@
 <template>
   <div>
     <div class="row">
-      
       <div
         v-bind:key="index"
         v-for="(error, index) in errors"
@@ -12,11 +11,11 @@
       >{{ index + ' : ' + error.join(', ') }}</div>
     </div>
     <div class="row h-100 justify-content-center align-items-center">
-
-      <div v-if="isSuccess" class="alert alert-success col-8" role="alert">
-        This is a success alert—check it out!
-      </div>
-
+      <div
+        v-if="isSuccess"
+        class="alert alert-success col-8"
+        role="alert"
+      >Contact Saved Successfully!</div>
       <form class="col-6 card" id="form">
         <div class="form-group pt-3">
           <label>First Name</label>
@@ -65,16 +64,13 @@
 </template>
 
 <script>
-
 import VueCookies from "vue-cookies";
-import router from "../router";
 import axios from "axios";
 
 export default {
   name: "contactForm",
   props: {
-    id: Number,
-    isSuccess: Boolean
+    id: Number
   },
   data: function() {
     return {
@@ -110,10 +106,7 @@ export default {
           self.phoneSecondary = contact.phoneSecondary;
           self.email = contact.email;
         })
-        .catch(function(errors) {
-          /* eslint-disable no-console */
-          console.log(errors.data);
-        });
+        .catch(function() {});
     },
     update: function() {
       var self = this;
@@ -138,16 +131,10 @@ export default {
           Authorization: "Bearer " + VueCookies.get("token")
         }
       })
-        .then(function(response) {
-          /* eslint-disable no-console */
-          console.log(response.data);
-          // self.$parent.editId = null;
+        .then(function() {
           self.isSuccess = true;
         })
-        .catch(function(errors) {
-          /* eslint-disable no-console */
-          console.log(errors.data);
-        });
+        .catch(function() {});
     },
     create: function() {
       var self = this;
@@ -192,7 +179,6 @@ export default {
   },
   created: function() {
     // get the contact data if id is not null...
-    console.log("THE ID : " + this.$parent.editId);
     this.getContact();
   }
 };
