@@ -2,15 +2,14 @@ import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
-// import bootstrap from "bootstrap";
+
 import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap";
+
 const axios = require("axios");
-// const config = require("./config");
+const VueCookie = require("vue-cookie");
 
-var VueCookie = require("vue-cookie");
-// Vue.use(bootstrap);
 Vue.use(VueCookie);
-
 Vue.config.productionTip = false;
 
 Vue.mixin({

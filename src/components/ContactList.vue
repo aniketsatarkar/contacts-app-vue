@@ -35,6 +35,11 @@ export default {
       list: []
     };
   },
+  watch: {
+    list: function(newValue, oldValue) {
+      self.list = newValue;
+    }
+  },
   methods: {
     getList: function() {
       var self = this;
