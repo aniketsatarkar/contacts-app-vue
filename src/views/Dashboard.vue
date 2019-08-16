@@ -6,7 +6,6 @@
           <div class="col-md-4 col-sm-4">
             <h3 id="quote">Contacts</h3>
           </div>
-
           <div class="col-md-4 col-sm-4">
             <input
               v-model="search"
@@ -16,12 +15,11 @@
               placeholder="Search"
             />
           </div>
-
           <div class="col-md-4 col-sm-4 text-right">
             <button type="button" class="btn btn-primary btn-sm" v-on:click="addNew">+ New Contact</button>
           </div>
         </div>
-        <contact-list v-bind:list="searchResults"></contact-list>
+        <contact-list ref="contactList"></contact-list>
       </div>
     </div>
     <div v-else>
@@ -44,32 +42,15 @@ export default {
     return {
       showList: true,
       editId: null,
-      search: null,
-      searchResults: []
+      search: null
     };
   },
   methods: {
     addNew: function() {
       this.showList = false;
     },
-    searchContacts: function(string) {
-      var self = this;
-
-      if (string == null || string == undefined) {
-        return false;
-      }
-
-      self
-        .getRequest("contact/list?search=" + string)
-        .then(function(response) {
-          if (!response.status == 200) {
-            alert("Failed to get results");
-          }
-          self.searchResults = response.data.contacts;
-        })
-        .catch(function() {
-          alert("Failed to get results");
-        });
+    searchContacts: function() {
+      this.$refs.contactList.searchContacts(this.search);
     }
   },
   components: {

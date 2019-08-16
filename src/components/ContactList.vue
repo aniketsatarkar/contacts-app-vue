@@ -66,6 +66,25 @@ export default {
     edit: function(id) {
       this.$parent.editId = id;
       this.$parent.showList = false;
+    },
+    searchContacts: function(string) {
+      var self = this;
+
+      if (string == null || string == undefined) {
+        return false;
+      }
+
+      self
+        .getRequest("contact/list?search=" + string)
+        .then(function(response) {
+          if (!response.status == 200) {
+            alert("Failed to get results");
+          }
+          self.list = response.data.contacts;
+        })
+        .catch(function() {
+          alert("Failed to get results");
+        });
     }
   },
   created: function() {
