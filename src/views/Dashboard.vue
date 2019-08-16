@@ -23,10 +23,8 @@
 </template>
 
 <script>
-
 import ContactList from "../components/ContactList";
 import ContactForm from "../components/ContactForm";
-// import VueCookies from "vue-cookies";
 import router from "../router";
 
 export default {

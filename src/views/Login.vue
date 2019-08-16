@@ -42,11 +42,11 @@
 </template>
 
 <script>
-const axios = require("axios");
 import router from "../router";
 
 export default {
   name: "login",
+  mixins: [],
   data: function() {
     return {
       email: "anikets@gmail.com",
@@ -63,11 +63,10 @@ export default {
 
       if (!form.checkValidity()) return false;
 
-      axios
-        .post("http://laravel.local/api/auth/login", {
-          email: vm.email,
-          password: vm.password
-        })
+      this.postRequest("auth/login", {
+        email: vm.email,
+        password: vm.password
+      })
         .then(function(response) {
           /* eslint-disable no-console */
           console.log("RESPONSE : " + JSON.stringify(response));
@@ -83,7 +82,7 @@ export default {
           // redirect user to the dashboard >>
           router.push({ name: "dashboard" });
         })
-        .catch(function(error) {
+        .catch(function(errors) {
           vm.errors = errors.data.errors;
         });
     }

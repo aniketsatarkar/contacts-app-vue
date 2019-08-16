@@ -91,13 +91,7 @@ export default {
         return false;
       }
 
-      axios({
-        method: "GET",
-        url: "http://laravel.local/api/contact/get?id=" + this.$parent.editId,
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("token")
-        }
-      })
+      this.getRequest("contact/get?id=" + this.$parent.editId)
         .then(function(response) {
           var contact = response.data.contact;
           self.firstName = contact.firstName;
@@ -116,20 +110,13 @@ export default {
 
       if (!form.checkValidity()) return false;
 
-      axios({
-        method: "POST",
-        url: "http://laravel.local/api/contact/update",
-        data: {
-          id: this.$parent.editId,
-          firstName: self.firstName,
-          lastName: self.lastName,
-          phone: self.phone,
-          phoneSecondary: self.phoneSecondary,
-          email: self.email
-        },
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("token")
-        }
+      this.postRequest("contact/update", {
+        id: this.$parent.editId,
+        firstName: self.firstName,
+        lastName: self.lastName,
+        phone: self.phone,
+        phoneSecondary: self.phoneSecondary,
+        email: self.email
       })
         .then(function() {
           self.isSuccess = true;
@@ -144,19 +131,12 @@ export default {
 
       if (!form.checkValidity()) return false;
 
-      axios({
-        method: "POST",
-        url: "http://laravel.local/api/contact/store",
-        data: {
-          firstName: self.firstName,
-          lastName: self.lastName,
-          phone: self.phone,
-          phoneSecondary: self.phoneSecondary,
-          email: self.email
-        },
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("token")
-        }
+      this.postRequest("contact/store", {
+        firstName: self.firstName,
+        lastName: self.lastName,
+        phone: self.phone,
+        phoneSecondary: self.phoneSecondary,
+        email: self.email
       })
         .then(function() {
           self.isSuccess = true;

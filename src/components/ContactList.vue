@@ -13,7 +13,7 @@
         <tr v-for="item in list" v-bind:key="item.id">
           <td class="text-center">{{ item.firstName + " " + item.lastName }}</td>
           <td class="text-center">{{ item.phone }}</td>
-          <td class="text-center">{{ (item.email)? item.email : "N/A" }}</td>
+          <td class="text-center">{{ item.emails? item.email : "N/A" }}</td>
           <td class="text-center">
             <button class="btn btn-outline-primary btn-sm mr-3" v-on:click="edit(item.id)">Edit</button>
             <button class="btn btn-outline-danger btn-sm" v-on:click="archive(item.id)">Delete</button>
@@ -25,9 +25,6 @@
 </template>
 
 <script>
-import axios from "axios";
-import VueCookies from "vue-cookies";
-
 export default {
   name: "contactList",
   proprs: {
@@ -41,13 +38,8 @@ export default {
   methods: {
     getList: function() {
       var self = this;
-      axios({
-        url: "http://laravel.local/api/contact/list",
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("token")
-        }
-      })
+
+      this.getRequest("contact/list")
         .then(function(response) {
           self.list = response.data.contacts;
         })
@@ -58,21 +50,13 @@ export default {
 
       var self = this;
 
-      axios({
-        method: "POST",
-        url: "http://laravel.local/api/contact/delete",
-        data: {
-          id: id
-        },
-        headers: {
-          Authorization: "Bearer " + VueCookies.get("token")
-        }
+      this.postRequest("contact/delete", {
+        id: id
       })
         .then(function() {
           self.getList();
         })
-        .catch(function() {
-        });
+        .catch(function() {});
     },
     edit: function(id) {
       this.$parent.editId = id;

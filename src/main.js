@@ -16,23 +16,28 @@ Vue.config.productionTip = false;
 Vue.mixin({
   data: function() {
     return {
-      baseUrl: "http://laravel.local/api/"
+      apiURL: "http://laravel.local/api/"
     };
   },
   methods: {
-    postRequest: (path, params = {}) => {
+    postRequest: function(path, params = {}) {
+      var self = this;
       return axios({
         method: "POST",
-        url: this.data.baseUrl + path,
+        url: self.apiURL + path,
         data: params,
-        headers: { Authorization: "bearer " + this.$cookie.get("token") }
+        headers: { Authorization: "Bearer " + VueCookie.get("token") }
       });
     },
-    getRequest: (path, params = {}) => {
+    getRequest: function(path, params = {}) {
+      var self = this;
       return axios({
         method: "GET",
-        url: this.data.baseUrl + path,
-        data: params
+        url: self.apiURL + path,
+        data: params,
+        headers: {
+          Authorization: "Bearer " + VueCookie.get("token")
+        }
       });
     }
   }
