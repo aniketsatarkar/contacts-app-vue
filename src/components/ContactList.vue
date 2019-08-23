@@ -36,7 +36,7 @@ export default {
     };
   },
   watch: {
-    list: function(newValue, oldValue) {
+    list: function(newValue) {
       self.list = newValue;
     }
   },
